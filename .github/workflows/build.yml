@@ -1,0 +1,67 @@
+name: Build Desktop Pet
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:  # รัน manual ได้
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install pywebview Pillow pyinstaller
+
+      - name: Build EXE
+        run: |
+          pyinstaller `
+            --noconfirm `
+            --onefile `
+            --windowed `
+            --name "DesktopPet" `
+            --add-data "sprites;sprites" `
+            --hidden-import "webview.platforms.winforms" `
+            desktop_pet.py
+
+      - name: Upload EXE
+        uses: actions/upload-artifact@v4
+        with:
+          name: DesktopPet-Windows
+          path: dist/DesktopPet.exe
+
+  build-mac:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install pywebview Pillow pyinstaller
+
+      - name: Build APP
+        run: |
+          pyinstaller \
+            --noconfirm \
+            --windowed \
+            --name "DesktopPet" \
+            --add-data "sprites:sprites" \
+            --hidden-import "webview.platforms.cocoa" \
+            desktop_pet.py
+
+      - name: Zip APP
+        run: cd dist && zip -r DesktopPet-Mac.zip DesktopPet.app
+
+      - name: Upload APP
+        uses: actions/upload-artifact@v4
+        with:
+          name: DesktopPet-Mac
+          path: dist/DesktopPet-Mac.zip
