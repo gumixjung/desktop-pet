@@ -236,7 +236,7 @@ win = webview.create_window(
     on_top      = True,
     easy_drag   = False,
     shadow      = False,
-    background_color='#00000000',
+    background_color='#000000',
     resizable   = False,
 )
 win.events.loaded += lambda: threading.Thread(
