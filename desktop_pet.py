@@ -241,4 +241,7 @@ win = webview.create_window(
 )
 win.events.loaded += lambda: threading.Thread(
     target=walk_loop, daemon=True).start()
-webview.start()
+if sys.platform == 'win32':
+    webview.start(gui='cef')
+else:
+    webview.start()
