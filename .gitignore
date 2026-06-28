@@ -6,3 +6,4 @@ __pycache__/
 image.png
 make_sprites.py
 test_transparent.py
+*.tmp
