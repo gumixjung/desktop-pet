@@ -242,6 +242,6 @@ win = webview.create_window(
 win.events.loaded += lambda: threading.Thread(
     target=walk_loop, daemon=True).start()
 if sys.platform == 'win32':
-    webview.start(gui='cef')
+    webview.start(gui='edgechromium')
 else:
     webview.start()

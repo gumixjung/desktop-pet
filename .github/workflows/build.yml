@@ -16,7 +16,7 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: pip install pywebview Pillow pyinstaller cefpython3
+        run: pip install pywebview Pillow pyinstaller
 
       - name: Build EXE
         run: |
@@ -27,7 +27,6 @@ jobs:
             --name "DesktopPet" `
             --add-data "sprites;sprites" `
             --hidden-import "webview.platforms.winforms" `
-            --hidden-import "webview.platforms.cef" `
             desktop_pet.py
 
       - name: Upload EXE
