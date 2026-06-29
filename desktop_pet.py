@@ -6,6 +6,38 @@ from PIL import Image
 import webview
 
 import sys
+
+if sys.platform == 'win32':
+    import ctypes
+    from System.Drawing import Color
+
+    import webview.platforms.winforms as _wf
+    import webview.platforms.edgechromium as _ec
+
+    _orig_bf_init = _wf.BrowserView.BrowserForm.__init__
+
+    def _patched_bf_init(self, window, cache_dir):
+        _orig_bf_init(self, window, cache_dir)
+        if window.transparent:
+            self.BackColor = Color.Transparent
+            WS_EX_LAYERED = 0x80000
+            hwnd = self.Handle.ToInt32()
+            current = ctypes.windll.user32.GetWindowLongW(hwnd, -20)
+            ctypes.windll.user32.SetWindowLongW(hwnd, -20, current | WS_EX_LAYERED)
+
+    _wf.BrowserView.BrowserForm.__init__ = _patched_bf_init
+
+    _ec.EdgeChrome.on_navigation_start = lambda *a: None
+
+    _orig_on_nav_completed = _ec.EdgeChrome.on_navigation_completed
+
+    def _patched_on_nav_completed(self, sender, args):
+        _orig_on_nav_completed(self, sender, args)
+        if self.pywebview_window.transparent:
+            self.form.Show()
+            self.form.Activate()
+
+    _ec.EdgeChrome.on_navigation_completed = _patched_on_nav_completed
 BASE_DIR   = getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__)))
 SPRITE_DIR = os.path.join(BASE_DIR, "sprites")
 CAT_H      = 120
