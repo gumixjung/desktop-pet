@@ -9,10 +9,11 @@ import sys
 
 if sys.platform == 'win32':
     import ctypes
-    from System.Drawing import Color
 
     import webview.platforms.winforms as _wf
     import webview.platforms.edgechromium as _ec
+
+    from System.Drawing import Color
 
     _orig_bf_init = _wf.BrowserView.BrowserForm.__init__
 
